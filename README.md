@@ -2,8 +2,8 @@
 
 Schreibt kutego-Kurstermine (inkl. Buchungsstatus und Teilnehmerliste) automatisch als
 echte Termine in einen Google-Kalender – per Google Calendar API, nicht per ICS-Abo.
-Dadurch: Sync-Latenz von ~5 Minuten statt der 8-24h, die Google/Apple beim Abonnieren
-externer ICS-URLs brauchen.
+Dadurch: Sync-Latenz von ca. 15 Minuten (GitHub-Zeitplan-Trigger, nicht exakt garantiert)
+statt der 8-24h, die Google/Apple beim Abonnieren externer ICS-URLs brauchen.
 
 Jeder synchronisierte Termin bekommt:
 - `✅ ` vor dem Titel, wenn mindestens eine Buchung (ATTENDEE) vorliegt
@@ -73,8 +73,11 @@ kostet).
    - `GOOGLE_CALENDAR_ID` – `puehlm@gmail.com`
    - `GOOGLE_SERVICE_ACCOUNT_JSON` – kompletter Inhalt von `service-account.json`
      (die ganze JSON-Datei als Text reinkopieren)
-4. Fertig. Der Workflow unter `.github/workflows/sync.yml` läuft automatisch alle 5
-   Minuten (`cron: '*/5 * * * *'`) und schreibt Änderungen in den Google-Kalender.
+4. Fertig. Der Workflow unter `.github/workflows/sync.yml` läuft automatisch alle 15
+   Minuten (`cron: '*/15 * * * *'`) und schreibt Änderungen in den Google-Kalender.
+   GitHub garantiert bei Zeitplan-Triggern keine exakte Taktung – bei sehr häufigen
+   Intervallen (unter 15 Min.) kam es in der Praxis zu spürbaren Verzögerungen/
+   übersprungenen Läufen, 15 Minuten laufen deutlich stabiler.
 5. Zum manuellen Testen: Tab **Actions** im Repo → Workflow "kutego-sync" auswählen →
    **"Run workflow"** → nach ein paar Sekunden auf den Lauf klicken und die Logs prüfen.
 
