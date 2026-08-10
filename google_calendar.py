@@ -4,6 +4,10 @@ from googleapiclient.discovery import build
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 SOURCE_TAG = "kutego"
 
+# Google Calendar event colorId palette (fixed set, no custom hex values possible)
+COLOR_ID_BOOKED = "10"    # Basil, dark green
+COLOR_ID_OPEN = "8"       # Graphite, gray
+
 
 def get_service(credentials_path):
     creds = service_account.Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
@@ -48,6 +52,7 @@ def build_event_body(event, timezone):
         "description": description,
         "start": {"dateTime": event["start"].isoformat(), "timeZone": timezone},
         "end": {"dateTime": event["end"].isoformat(), "timeZone": timezone},
+        "colorId": COLOR_ID_BOOKED if booked else COLOR_ID_OPEN,
         "extendedProperties": {
             "private": {"source": SOURCE_TAG, "kutego_uid": event["uid"]}
         },
@@ -61,4 +66,5 @@ def event_changed(existing, desired):
         or existing.get("description") != desired["description"]
         or existing.get("start", {}).get("dateTime") != desired["start"]["dateTime"]
         or existing.get("end", {}).get("dateTime") != desired["end"]["dateTime"]
+        or existing.get("colorId") != desired["colorId"]
     )
