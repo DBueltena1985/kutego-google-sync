@@ -17,18 +17,6 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Debug KUTEGO_ICS_URL (safe, no secret shown)
-        env:
-          KUTEGO_ICS_URL: ${{ secrets.KUTEGO_ICS_URL }}
-        run: |
-          python3 -c "
-          import os
-          v = os.environ['KUTEGO_ICS_URL']
-          print('length:', len(v))
-          print('first 15 repr:', repr(v[:15]))
-          print('last 15 repr:', repr(v[-15:]))
-          "
-
       - name: Write service account key
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
