@@ -8,8 +8,8 @@ PROJECT_DIR = Path(__file__).resolve().parent
 
 
 def run_sync():
-    ics_url = os.environ["KUTEGO_ICS_URL"]
-    calendar_id = os.environ["GOOGLE_CALENDAR_ID"]
+    ics_url = os.environ["KUTEGO_ICS_URL"].strip()
+    calendar_id = os.environ["GOOGLE_CALENDAR_ID"].strip()
     credentials_path = os.environ.get("GOOGLE_SERVICE_ACCOUNT_FILE", "service-account.json")
     if not os.path.isabs(credentials_path):
         credentials_path = str(PROJECT_DIR / credentials_path)
