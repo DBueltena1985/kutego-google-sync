@@ -1,7 +1,6 @@
 name: kutego-sync
 
 on:
-  schedule:
   workflow_dispatch:
 
 jobs:
