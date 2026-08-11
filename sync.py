@@ -1,13 +1,22 @@
 import os
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from ics_source import fetch_kutego_events
 from google_calendar import build_event_body, event_changed, get_service, list_synced_events
 
 PROJECT_DIR = Path(__file__).resolve().parent
+ACTIVE_HOURS_TZ = "Europe/Berlin"
+ACTIVE_HOUR_START = 6
+ACTIVE_HOUR_END = 22
 
 
 def run_sync():
+    now = datetime.now(ZoneInfo(ACTIVE_HOURS_TZ))
+    if not (ACTIVE_HOUR_START <= now.hour < ACTIVE_HOUR_END):
+        return {"skipped": True, "reason": f"outside {ACTIVE_HOUR_START}-{ACTIVE_HOUR_END} {ACTIVE_HOURS_TZ}"}
+
     ics_url = os.environ["KUTEGO_ICS_URL"].strip()
     calendar_id = os.environ["GOOGLE_CALENDAR_ID"].strip()
     credentials_path = os.environ.get("GOOGLE_SERVICE_ACCOUNT_FILE", "service-account.json")
