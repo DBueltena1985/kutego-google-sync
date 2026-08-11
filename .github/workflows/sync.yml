@@ -2,7 +2,6 @@ name: kutego-sync
 
 on:
   schedule:
-    - cron: '*/20 * * * *'
   workflow_dispatch:
 
 jobs:
