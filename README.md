@@ -53,7 +53,23 @@ python sync.py
 Gibt `{'created': X, 'updated': X, 'deleted': X, 'unchanged': X}` aus. Danach im
 Google-Kalender prüfen, ob die Termine mit ✅/🔲 auftauchen.
 
-## 4. Deployment: GitHub Actions (kostenlos, kein eigener Server nötig)
+## 4. Betrieb seit 2026-10-21: eigener Server (Server-Dani)
+
+Der Abgleich läuft auf dem privaten Hetzner-Server statt über GitHub Actions:
+
+- Code: `/srv/apps/kutego` (Klon dieses Repos), Python-venv darin, läuft als Benutzer `apps`.
+- Einstellungen: `/etc/kutego.env`, Google-Schlüssel: `/etc/kutego/service-account.json`
+  (beide nur für root und `apps` lesbar).
+- systemd-Timer `kutego-sync.timer`: alle 5 Minuten. `sync.py` überspringt die Zeit außerhalb 6–22 Uhr.
+- Bei einem Fehler geht automatisch eine Mail raus (`OnFailure=garde-fehler-mail@%n.service`).
+- Status: `ssh privat "systemctl list-timers kutego-sync.timer; journalctl -u kutego-sync -n 5"`
+- Update nach Code-Änderung: `ssh privat "sudo -u apps git -C /srv/apps/kutego pull && systemctl start kutego-sync"`
+
+Der GitHub-Workflow ist auf GitHub deaktiviert (Actions → kutego-sync → „Disable workflow“),
+damit nicht zwei Stellen gleichzeitig Termine anlegen. Die Anleitung unten beschreibt den
+früheren Betrieb über GitHub Actions.
+
+## 4a. Früher: GitHub Actions (kostenlos, kein eigener Server nötig)
 
 PythonAnywhere scheidet auf dem Free-Tier aus: ausgehende Verbindungen sind dort auf
 eine Domain-Whitelist beschränkt, `api.kurs.software` steht nicht drauf (Proxy-Fehler
